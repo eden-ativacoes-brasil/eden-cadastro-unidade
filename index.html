@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eden PACS — Solicitação de Cadastro de Nova Filial</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray-50: #f9f9f8;
+      --gray-100: #f0f0ee;
+      --gray-200: #e4e4e0;
+      --gray-400: #a0a09a;
+      --gray-600: #6b6b65;
+      --red: #c0392b;
+      --radius: 2px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--gray-50); color: var(--black); min-height: 100vh; padding-bottom: 80px; }
+
+    .site-header { background: var(--black); padding: 20px 0; position: sticky; top: 0; z-index: 100; }
+    .site-header .inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Sora', sans-serif; font-weight: 300; font-size: 22px; color: var(--white); letter-spacing: 1px; }
+    .header-label { font-size: 11px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray-400); }
+    .progress-bar { height: 3px; background: var(--gray-200); position: sticky; top: 62px; z-index: 99; }
+    .progress-fill { height: 100%; background: var(--black); width: 0%; transition: width 0.4s ease; }
+    .form-hero { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 56px 24px 40px; text-align: center; }
+    .form-hero h1 { font-family: 'Sora', sans-serif; font-size: clamp(22px, 4vw, 34px); font-weight: 600; letter-spacing: -0.8px; line-height: 1.2; margin-bottom: 12px; }
+    .form-hero p { font-size: 15px; color: var(--gray-600); max-width: 500px; margin: 0 auto; line-height: 1.6; }
+    .form-wrapper { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+    .section-block { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); margin-top: 28px; overflow: hidden; }
+    .section-header { display: flex; align-items: center; gap: 14px; padding: 22px 28px; border-bottom: 1px solid var(--gray-100); background: var(--gray-50); }
+    .section-number { width: 28px; height: 28px; background: var(--black); color: var(--white); font-family: 'Sora', sans-serif; font-size: 12px; font-weight: 600; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .section-title { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
+    .section-subtitle { font-size: 12px; color: var(--gray-600); margin-top: 2px; }
+    .section-body { padding: 28px; display: flex; flex-direction: column; gap: 22px; }
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-group > label { font-size: 13px; font-weight: 500; color: var(--black); }
+    .field-hint { font-size: 11.5px; color: var(--gray-600); }
+    .required-star { color: var(--red); }
+    input[type="text"], input[type="email"], input[type="tel"], input[type="number"], input[type="url"], select, textarea {
+      width: 100%; padding: 11px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px;
+      color: var(--black); background: var(--white); border: 1px solid var(--gray-200);
+      border-radius: var(--radius); outline: none; transition: border-color 0.18s, box-shadow 0.18s; appearance: none;
+    }
+    input::placeholder, textarea::placeholder { color: var(--gray-400); font-style: italic; font-size: 13px; }
+    input:focus, select:focus, textarea:focus { border-color: var(--black); box-shadow: 0 0 0 3px rgba(10,10,10,0.06); }
+    input.error, select.error, textarea.error { border-color: var(--red); }
+    .error-msg { font-size: 11.5px; color: var(--red); display: none; }
+    .error-msg.visible { display: block; }
+    textarea { resize: vertical; min-height: 80px; }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230a0a0a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center; padding-right: 38px; cursor: pointer;
+    }
+    input[type="file"] {
+      width: 100%; padding: 10px 14px; border: 1.5px dashed var(--gray-200);
+      border-radius: var(--radius); background: var(--gray-50); cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--gray-600);
+    }
+    input[type="file"]:focus { border-color: var(--black); outline: none; }
+    .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    @media (max-width: 560px) { .cols-2, .cols-3 { grid-template-columns: 1fr; } }
+    .radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .radio-option { position: relative; }
+    .radio-option input[type="radio"] { position: absolute; opacity: 0; width: 0; }
+    .radio-option label { display: flex; align-items: center; padding: 9px 18px; border: 1px solid var(--gray-200); border-radius: 99px; cursor: pointer; font-size: 13.5px; transition: all 0.15s; user-select: none; }
+    .radio-option input:checked + label { background: var(--black); color: var(--white); border-color: var(--black); }
+    .radio-option label:hover { border-color: var(--black); }
+    .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+    .check-option { position: relative; }
+    .check-option input[type="checkbox"] { position: absolute; opacity: 0; }
+    .check-option label { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1px solid var(--gray-200); border-radius: var(--radius); cursor: pointer; font-size: 12.5px; font-weight: 500; transition: all 0.15s; user-select: none; }
+    .check-option label::before { content: ''; width: 14px; height: 14px; border: 1.5px solid var(--gray-300, #ccc); border-radius: 3px; flex-shrink: 0; transition: all 0.15s; }
+    .check-option input:checked + label { background: var(--black); color: var(--white); border-color: var(--black); }
+    .check-option input:checked + label::before { background: var(--white); border-color: var(--white); }
+    .check-option label:hover { border-color: var(--black); }
+    .vol-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 8px; }
+    .vol-label { font-size: 12px; color: var(--gray-600); margin-bottom: 4px; display: block; }
+    .vol-total { background: var(--gray-50); border: 1px solid var(--gray-200); padding: 11px 14px; font-weight: 600; font-size: 15px; border-radius: var(--radius); }
+    .dynamic-table-wrap { overflow-x: auto; margin-top: 10px; }
+    .dynamic-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 520px; }
+    .dynamic-table th { background: var(--black); color: var(--white); font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 10px 12px; text-align: left; white-space: nowrap; }
+    .dynamic-table td { padding: 5px 5px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+    .dynamic-table tr:last-child td { border-bottom: none; }
+    .dynamic-table input[type="text"], .dynamic-table select { padding: 8px 10px; font-size: 13px; }
+    .btn-remove-row { background: none; border: none; cursor: pointer; color: var(--gray-400); font-size: 18px; line-height: 1; padding: 4px 8px; border-radius: 4px; transition: color 0.15s; }
+    .btn-remove-row:hover { color: var(--red); }
+    .btn-add-row { display: inline-flex; align-items: center; gap: 7px; margin-top: 10px; padding: 9px 16px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--black); background: var(--white); border: 1.5px dashed var(--gray-200); border-radius: var(--radius); cursor: pointer; transition: all 0.15s; }
+    .btn-add-row:hover { border-color: var(--black); background: var(--gray-50); }
+    .api-info-box { display: flex; gap: 14px; background: #f0f7ff; border: 1px solid #c8dff7; border-radius: var(--radius); padding: 16px 18px; margin-bottom: 4px; }
+    .api-info-icon { color: #2563eb; flex-shrink: 0; margin-top: 2px; }
+    .api-info-content { display: flex; flex-direction: column; gap: 4px; }
+    .api-info-title { font-size: 12.5px; font-weight: 600; color: #1e3a5f; }
+    .api-info-text { font-size: 12px; color: #3b5a80; line-height: 1.6; }
+    .api-link { color: #2563eb; font-weight: 600; text-decoration: none; border-bottom: 1px solid rgba(37,99,235,0.3); transition: border-color 0.15s; }
+    .api-link:hover { border-color: #2563eb; }
+    .doc-description-box { background: var(--gray-50); border: 1px solid var(--gray-200); border-left: 3px solid var(--black); border-radius: var(--radius); padding: 14px 16px; margin-top: 4px; }
+    .doc-desc-title { font-size: 12px; font-weight: 600; color: var(--black); margin-bottom: 8px; }
+    .doc-desc-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .doc-desc-list li { font-size: 12px; color: var(--gray-600); display: flex; align-items: flex-start; gap: 8px; }
+    .doc-desc-list li::before { content: '—'; color: var(--gray-400); flex-shrink: 0; }
+    .doc-upload-area { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.4s ease, opacity 0.3s ease; margin-top: 0; }
+    .doc-upload-area.visible { max-height: 200px; opacity: 1; margin-top: 14px; }
+    .integration-section { max-height: 0; overflow: hidden; transition: max-height 0.7s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease; opacity: 0; }
+    .integration-section.visible { max-height: 6000px; opacity: 1; }
+    .integration-banner { background: var(--black); color: var(--white); padding: 20px 28px; margin-top: 28px; display: flex; align-items: center; gap: 16px; border-radius: var(--radius); }
+    .integration-banner h3 { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; }
+    .integration-banner p { font-size: 12.5px; color: rgba(255,255,255,0.6); margin-top: 3px; }
+    .int-num { width: 28px; height: 28px; background: #444; color: var(--white); font-family: 'Sora', sans-serif; font-size: 10px; font-weight: 600; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .submit-area { margin-top: 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .submit-note { font-size: 12px; color: var(--gray-600); line-height: 1.5; max-width: 380px; }
+    .btn-submit { background: var(--black); color: var(--white); font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; padding: 14px 36px; border: none; border-radius: var(--radius); cursor: pointer; transition: background 0.15s, transform 0.1s; }
+    .btn-submit:hover { background: #222; }
+    .btn-submit:active { transform: scale(0.98); }
+    .success-screen { display: none; flex-direction: column; align-items: center; text-align: center; padding: 80px 24px; gap: 20px; }
+    .success-screen.visible { display: flex; }
+    .success-icon { width: 64px; height: 64px; background: var(--black); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .success-screen h2 { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 600; }
+    .success-screen p { color: var(--gray-600); max-width: 400px; line-height: 1.6; }
+    .field-divider { height: 1px; background: var(--gray-100); margin: 2px 0; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <span class="logo">eden</span>
+    <span class="header-label">Cadastro de Nova Unidade</span>
+  </div>
+</header>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="form-hero">
+  <h1>Solicitação de Cadastro</h1>
+  <p style="font-family:'Sora',sans-serif; font-size:17px; font-weight:600; color:#0a0a0a; letter-spacing:-0.3px; margin-bottom:10px;">Eden PACS</p>
+  <p>Preencha os dados abaixo para que nossa equipe realize o cadastro da nova unidade no Eden Cloud PACS.</p>
+</div>
+
+<div class="form-wrapper" id="formWrapper">
+<form id="mainForm" novalidate>
+
+  <!-- 1. IDENTIFICAÇÃO -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div><div class="section-title">Identificação da Unidade</div><div class="section-subtitle">Dados gerais da filial ou organização</div></div>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label>Nome da Organização / Filial <span class="required-star">*</span></label>
+        <input type="text" id="nomeOrg" placeholder="Ex.: Hospital Santa Clara — Unidade Centro" />
+        <span class="error-msg" id="err-nomeOrg">Campo obrigatório.</span>
+      </div>
+      <div class="cols-2">
+        <div class="field-group">
+          <label>CNPJ <span class="required-star">*</span></label>
+          <input type="text" id="cnpjCliente" placeholder="00.000.000/0000-00" maxlength="18" />
+          <span class="error-msg" id="err-cnpjCliente">Informe um CNPJ válido.</span>
+        </div>
+        <div class="field-group">
+          <label>ID da Unidade</label>
+          <input type="text" id="idUnidade" placeholder="Informe o ID, se já existir" />
+          <span class="field-hint">Deixe em branco caso não possua.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. RESPONSÁVEL -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div><div class="section-title">Responsável pela Unidade</div><div class="section-subtitle">Contato principal para a implantação</div></div>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label>Nome completo <span class="required-star">*</span></label>
+        <div class="cols-2">
+          <div><input type="text" id="respNome" placeholder="Nome" /><span class="error-msg" id="err-respNome">Obrigatório.</span></div>
+          <div><input type="text" id="respSobrenome" placeholder="Sobrenome" /><span class="error-msg" id="err-respSobrenome">Obrigatório.</span></div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>E-mail <span class="required-star">*</span></label>
+        <input type="email" id="respEmail" placeholder="exemplo@empresa.com" />
+        <span class="error-msg" id="err-respEmail">Informe um e-mail válido.</span>
+      </div>
+      <div class="field-group">
+        <label>Telefone / WhatsApp <span class="required-star">*</span></label>
+        <input type="tel" id="respTelefone" placeholder="(00) 00000-0000" maxlength="15" />
+        <span class="field-hint">Favor inserir um número de telefone válido.</span>
+        <span class="error-msg" id="err-respTelefone">Informe um telefone válido.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ENDEREÇO -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div><div class="section-title">Endereço da Unidade</div><div class="section-subtitle">Localização física da filial</div></div>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label>Endereço <span class="required-star">*</span></label>
+        <input type="text" id="endereco" placeholder="Rua, número, complemento" />
+        <span class="error-msg" id="err-endereco">Campo obrigatório.</span>
+      </div>
+      <div class="cols-2">
+        <div class="field-group">
+          <label>Cidade <span class="required-star">*</span></label>
+          <input type="text" id="cidade" placeholder="Ex.: São Paulo" />
+          <span class="error-msg" id="err-cidade">Obrigatório.</span>
+        </div>
+        <div class="field-group">
+          <label>Estado <span class="required-star">*</span></label>
+          <select id="estado">
+            <option value="">Selecione...</option>
+            <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option>
+          </select>
+          <span class="error-msg" id="err-estado">Obrigatório.</span>
+        </div>
+      </div>
+      <div class="field-group" style="max-width:200px">
+        <label>CEP <span class="required-star">*</span></label>
+        <input type="text" id="cep" placeholder="00000-000" maxlength="9" />
+        <span class="error-msg" id="err-cep">Informe um CEP válido.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. MODALIDADES & VOLUMETRIA -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div><div class="section-title">Modalidades, Equipamentos e Volumetria</div><div class="section-subtitle">Exames realizados, fabricantes e volume mensal estimado</div></div>
+    </div>
+    <div class="section-body">
+
+      <!-- MODALIDADES (ajuste 2) -->
+      <div class="field-group">
+        <label>Modalidades utilizadas <span class="required-star">*</span></label>
+        <div class="checkbox-grid" id="modalidadesGroup">
+          <div class="check-option"><input type="checkbox" id="mod-ct" value="CT"><label for="mod-ct">CT – Tomografia</label></div>
+          <div class="check-option"><input type="checkbox" id="mod-cr" value="CR"><label for="mod-cr">CR – Raio X</label></div>
+          <div class="check-option"><input type="checkbox" id="mod-ma" value="MA"><label for="mod-ma">MA – Mamógrafo</label></div>
+          <div class="check-option"><input type="checkbox" id="mod-do" value="DO"><label for="mod-do">DO – Densitometria</label></div>
+          <div class="check-option"><input type="checkbox" id="mod-mn" value="MN"><label for="mod-mn">MN – Medicina Nuclear</label></div>
+          <div class="check-option"><input type="checkbox" id="mod-mr" value="MR"><label for="mod-mr">MR – Ressonância</label></div>
+          <div class="check-option"><input type="checkbox" id="mod-xa" value="XA"><label for="mod-xa">XA – Hemodinâmica</label></div>
+          <div class="check-option"><input type="checkbox" id="mod-us" value="US"><label for="mod-us">US – Ultrassom</label></div>
+          <div class="check-option"><input type="checkbox" id="mod-cl" value="CL"><label for="mod-cl">CL – Colonoscopia</label></div>
+          <div class="check-option"><input type="checkbox" id="mod-es" value="ES"><label for="mod-es">ES – Endoscopia</label></div>
+          <div class="check-option"><input type="checkbox" id="mod-mg" value="MG"><label for="mod-mg">Métodos Gráficos</label></div>
+          <div class="check-option"><input type="checkbox" id="mod-out" value="Outros"><label for="mod-out">Outros</label></div>
+        </div>
+        <span class="error-msg" id="err-modalidades">Selecione ao menos uma modalidade.</span>
+      </div>
+
+      <div class="field-divider"></div>
+
+      <!-- MARCA E QUANTIDADE (ajuste 3) -->
+      <div class="field-group">
+        <label>Marca dos equipamentos e quantidade <span class="required-star">*</span></label>
+        <span class="field-hint">Informe a modalidade, o fabricante e a quantidade de equipamentos disponíveis na unidade</span>
+        <div class="dynamic-table-wrap">
+          <table class="dynamic-table">
+            <thead>
+              <tr>
+                <th style="width:38%">Modalidade</th>
+                <th>Marca / Fabricante</th>
+                <th style="width:110px">Quantidade</th>
+                <th style="width:42px"></th>
+              </tr>
+            </thead>
+            <tbody id="equipBody">
+              <tr>
+                <td><select class="equip-mod" style="width:100%"><option value="">Selecione...</option><option>CT – Tomografia</option><option>CR – Raio X</option><option>MA – Mamógrafo</option><option>DO – Densitometria</option><option>MN – Medicina Nuclear</option><option>MR – Ressonância</option><option>XA – Hemodinâmica</option><option>US – Ultrassom</option><option>CL – Colonoscopia</option><option>ES – Endoscopia</option><option>Métodos Gráficos</option><option>Outros</option></select></td>
+                <td><input type="text" class="equip-marca" placeholder="Ex.: Siemens, Philips, GE, Toshiba..." style="width:100%" list="marcaList" /></td>
+                <td><input type="number" class="equip-qtd" placeholder="1" min="1" style="width:100%" /></td>
+                <td style="text-align:center"><button type="button" class="btn-remove-row">×</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <datalist id="marcaList"><option value="Siemens"></option><option value="Philips"></option><option value="GE Healthcare"></option><option value="Toshiba/Canon"></option><option value="Hitachi"></option><option value="Agfa"></option><option value="Fujifilm"></option><option value="Hologic"></option><option value="Samsung"></option></datalist>
+        <button type="button" class="btn-add-row" id="addEquip">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Adicionar equipamento
+        </button>
+        <span class="error-msg" id="err-equip">Informe ao menos um equipamento com modalidade selecionada.</span>
+      </div>
+
+      <div class="field-divider"></div>
+
+      <!-- VOLUMETRIA -->
+      <div class="field-group">
+        <label>Volumetria mensal por modalidade <span class="required-star">*</span></label>
+        <span class="field-hint">Quantidade estimada de exames por mês. Preencha apenas as modalidades ativas.</span>
+        <div class="vol-grid">
+          <div class="field-group"><span class="vol-label">CT – Tomografia</span><input type="number" id="volCT" min="0" placeholder="0" data-vol /></div>
+          <div class="field-group"><span class="vol-label">CR – Raio X</span><input type="number" id="volCR" min="0" placeholder="0" data-vol /></div>
+          <div class="field-group"><span class="vol-label">MA – Mamógrafo</span><input type="number" id="volMA" min="0" placeholder="0" data-vol /></div>
+          <div class="field-group"><span class="vol-label">DO – Densitometria</span><input type="number" id="volDO" min="0" placeholder="0" data-vol /></div>
+          <div class="field-group"><span class="vol-label">MN – Med. Nuclear</span><input type="number" id="volMN" min="0" placeholder="0" data-vol /></div>
+          <div class="field-group"><span class="vol-label">MR – Ressonância</span><input type="number" id="volMR" min="0" placeholder="0" data-vol /></div>
+          <div class="field-group"><span class="vol-label">XA – Hemodinâmica</span><input type="number" id="volXA" min="0" placeholder="0" data-vol /></div>
+          <div class="field-group"><span class="vol-label">US – Ultrassom</span><input type="number" id="volUS" min="0" placeholder="0" data-vol /></div>
+          <div class="field-group"><span class="vol-label">CL – Colonoscopia</span><input type="number" id="volCL" min="0" placeholder="0" data-vol /></div>
+          <div class="field-group"><span class="vol-label">ES – Endoscopia</span><input type="number" id="volES" min="0" placeholder="0" data-vol /></div>
+          <div class="field-group"><span class="vol-label">Métodos Gráficos</span><input type="number" id="volMG" min="0" placeholder="0" data-vol /></div>
+          <div class="field-group"><span class="vol-label">Outros</span><input type="number" id="volOut" min="0" placeholder="0" data-vol /></div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Volumetria total / mês</label>
+        <div class="vol-total" id="volTotal">0 exames/mês</div>
+        <span class="field-hint">Calculado automaticamente com base nos campos acima.</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 5. OPERACIONAL -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div><div class="section-title">Configurações Operacionais</div><div class="section-subtitle">SLA, plantão e fluxo de trabalho</div></div>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label>Envio em horários de plantão? <span class="required-star">*</span></label>
+        <span class="field-hint">Noturno, feriados e finais de semana</span>
+        <div class="radio-group">
+          <div class="radio-option"><input type="radio" name="plantao" id="plantao-sim" value="Sim"><label for="plantao-sim">Sim</label></div>
+          <div class="radio-option"><input type="radio" name="plantao" id="plantao-nao" value="Não"><label for="plantao-nao">Não</label></div>
+        </div>
+        <span class="error-msg" id="err-plantao">Seleção obrigatória.</span>
+      </div>
+      <div class="field-divider"></div>
+      <div class="field-group">
+        <label>SLA acordado <span class="required-star">*</span></label>
+        <span class="field-hint">Tempo de resposta esperado por prioridade</span>
+        <div class="cols-3" style="margin-top:8px">
+          <div class="field-group"><span class="vol-label">Normal</span><input type="text" id="slaNormal" placeholder="Ex.: 24h" /><span class="error-msg" id="err-slaNormal">Obrigatório.</span></div>
+          <div class="field-group"><span class="vol-label">Prioritário</span><input type="text" id="slaPrioritario" placeholder="Ex.: 4h" /><span class="error-msg" id="err-slaPrioritario">Obrigatório.</span></div>
+          <div class="field-group"><span class="vol-label">Urgente</span><input type="text" id="slaUrgente" placeholder="Ex.: 1h" /><span class="error-msg" id="err-slaUrgente">Obrigatório.</span></div>
+        </div>
+      </div>
+      <div class="field-divider"></div>
+      <div class="field-group">
+        <label>Uso de Peer Review? <span class="required-star">*</span></label>
+        <div class="radio-group">
+          <div class="radio-option"><input type="radio" name="peerReview" id="peer-sim" value="Sim"><label for="peer-sim">Sim</label></div>
+          <div class="radio-option"><input type="radio" name="peerReview" id="peer-nao" value="Não"><label for="peer-nao">Não</label></div>
+        </div>
+        <span class="error-msg" id="err-peerReview">Seleção obrigatória.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. TÉCNICO -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div><div class="section-title">Configurações Técnicas</div><div class="section-subtitle">Servidor, sistema e layout de laudo</div></div>
+    </div>
+    <div class="section-body">
+
+      <!-- STATUS INICIAL — campo de texto com sugestões (ajuste 1) -->
+      <div class="field-group">
+        <label>Status inicial do exame no sistema <span class="required-star">*</span></label>
+        <input type="text" id="statusExame" placeholder="Ex.: Em preparação, Aguardando laudo, Pendente de envio..." list="statusList" />
+        <datalist id="statusList">
+          <option value="Em preparação"></option>
+          <option value="Aguardando laudo"></option>
+          <option value="Pendente de envio"></option>
+          <option value="Em laudação"></option>
+          <option value="Aguardando revisão"></option>
+          <option value="Laudo emitido"></option>
+          <option value="Novo exame"></option>
+        </datalist>
+        <span class="field-hint">Digite livremente ou escolha uma sugestão.</span>
+        <span class="error-msg" id="err-statusExame">Campo obrigatório.</span>
+      </div>
+
+      <div class="field-group">
+        <label>Uso de RIS / HIS — se sim, qual? <span class="required-star">*</span></label>
+        <input type="text" id="risHis" placeholder="Ex.: Tasy, MV, Philips, ou 'Não utiliza'" />
+        <span class="error-msg" id="err-risHis">Campo obrigatório.</span>
+      </div>
+
+      <div class="field-group">
+        <label>Modalidade de servidor <span class="required-star">*</span></label>
+        <div class="radio-group">
+          <div class="radio-option"><input type="radio" name="servidor" id="serv-fisico" value="Servidor Físico"><label for="serv-fisico">Servidor Físico</label></div>
+          <div class="radio-option"><input type="radio" name="servidor" id="serv-vm" value="Máquina Virtual (VM)"><label for="serv-vm">Máquina Virtual (VM)</label></div>
+        </div>
+        <span class="error-msg" id="err-servidor">Seleção obrigatória.</span>
+      </div>
+
+      <!-- LAYOUT DE LAUDO — upload (ajuste 5) -->
+      <div class="field-group">
+        <label>Layout de laudo personalizado</label>
+        <span class="field-hint">Caso possua, anexe o arquivo contendo layout de laudo com cabeçalho padrão, logotipo e posicionamento da assinatura. Deixe em branco para utilizar o layout padrão Eden.</span>
+        <input type="file" id="layoutLaudo" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" style="margin-top:6px" />
+        <span class="field-hint" style="margin-top:2px">Formatos aceitos: PDF, Word, PNG, JPG.</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 7. INTEGRAÇÃO -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div><div class="section-title">Integração com Sistemas Externos</div><div class="section-subtitle">A unidade precisará se integrar a outros sistemas?</div></div>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label>O cliente fará uso de integração? <span class="required-star">*</span></label>
+        <span class="field-hint">Caso sim, o formulário técnico de integração será exibido abaixo automaticamente</span>
+        <div class="radio-group">
+          <div class="radio-option"><input type="radio" name="integracao" id="integ-sim" value="Sim"><label for="integ-sim">Sim</label></div>
+          <div class="radio-option"><input type="radio" name="integracao" id="integ-nao" value="Não"><label for="integ-nao">Não</label></div>
+        </div>
+        <span class="error-msg" id="err-integracao">Seleção obrigatória.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO CONDICIONAL DE INTEGRAÇÃO -->
+  <div class="integration-section" id="integrationSection">
+
+    <div class="integration-banner">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div>
+        <h3>Solicitação de Integração</h3>
+        <p>Preencha os dados técnicos para análise de viabilidade. Prazo de retorno: 5 dias úteis após envio completo.</p>
+      </div>
+    </div>
+
+    <!-- 7.1 IDENTIFICAÇÃO -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="int-num">7.1</div>
+        <div><div class="section-title">Dados da Empresa</div><div class="section-subtitle">Identificação para fins de integração</div></div>
+      </div>
+      <div class="section-body">
+        <div class="cols-2">
+          <div class="field-group"><label>Nome da Empresa <span class="required-star">*</span></label><input type="text" id="intEmpresa" placeholder="Nome completo" /><span class="error-msg" id="err-intEmpresa">Obrigatório.</span></div>
+          <div class="field-group"><label>CNPJ <span class="required-star">*</span></label><input type="text" id="intCNPJ" placeholder="00.000.000/0000-00" maxlength="18" /><span class="error-msg" id="err-intCNPJ">Obrigatório.</span></div>
+        </div>
+        <div class="field-group"><label>Responsável técnico <span class="required-star">*</span></label><input type="text" id="intResponsavel" placeholder="Nome do responsável pela integração" /><span class="error-msg" id="err-intResponsavel">Obrigatório.</span></div>
+        <div class="cols-2">
+          <div class="field-group"><label>E-mail técnico <span class="required-star">*</span></label><input type="email" id="intEmail" placeholder="tecnico@empresa.com" /><span class="error-msg" id="err-intEmail">E-mail inválido.</span></div>
+          <div class="field-group"><label>Telefone / WhatsApp <span class="required-star">*</span></label><input type="tel" id="intTelefone" placeholder="(00) 00000-0000" maxlength="15" /><span class="error-msg" id="err-intTelefone">Obrigatório.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7.2 TABELA DE INTEGRAÇÕES (ajuste 4) -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="int-num">7.2</div>
+        <div><div class="section-title">Detalhes das Integrações</div><div class="section-subtitle">Informe cada tipo de integração necessária, o sistema e a versão</div></div>
+      </div>
+      <div class="section-body">
+        <div class="field-group">
+          <div class="api-info-box">
+            <div class="api-info-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="api-info-content">
+              <p class="api-info-title">Documentação técnica da API Eden</p>
+              <p class="api-info-text">A documentação técnica necessária para a integração com a API encontra-se disponível em: <a href="https://docs-middleware.edenmed.com/br" target="_blank" rel="noopener" class="api-link">API REST EDEN ↗</a></p>
+              <p class="api-info-text" style="margin-top:6px">A documentação inclui exemplos práticos das operações mais comuns suportadas pela API, bem como um índice dos principais endpoints disponíveis, acompanhado de uma descrição objetiva do propósito e da funcionalidade de cada um.</p>
+            </div>
+          </div>
+          <span class="field-hint">Adicione uma linha para cada integração necessária</span>
+          <div class="dynamic-table-wrap">
+            <table class="dynamic-table">
+              <thead>
+                <tr>
+                  <th style="width:34%">Tipo de integração</th>
+                  <th>Sistema integrado</th>
+                  <th style="width:26%">Versão utilizada</th>
+                  <th style="width:40px"></th>
+                </tr>
+              </thead>
+              <tbody id="integBody">
+                <tr>
+                  <td>
+                    <select class="integ-tipo" style="width:100%">
+                      <option value="">Selecione...</option>
+                      <option>RIS / HIS / EMR</option>
+                      <option>Arquitetura da integração</option>
+                      <option>Laudo e Imagem</option>
+                      <option>Dados demográficos do paciente</option>
+                      <option>Worklist</option>
+                      <option>Outros</option>
+                    </select>
+                  </td>
+                  <td><input type="text" class="integ-sistema" placeholder="Ex.: MV, Tasy, Pixeon..." style="width:100%" list="sistemaSugestoes" /></td>
+                  <td><input type="text" class="integ-versao" placeholder="Ex.: Soul, v3.2..." style="width:100%" list="versaoSugestoes" /></td>
+                  <td style="text-align:center"><button type="button" class="btn-remove-row">×</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <datalist id="sistemaSugestoes">
+            <option value="MV"></option><option value="Tasy (Philips)"></option><option value="Pixeon Smart"></option>
+            <option value="Pixeon Aurora"></option><option value="Soul MV"></option><option value="TOTVS Saúde"></option>
+            <option value="Carestream"></option><option value="iClinic"></option><option value="Wareline"></option><option value="Outros"></option>
+          </datalist>
+          <datalist id="versaoSugestoes">
+            <option value="Soul"></option><option value="Soul 3.0"></option><option value="Tasy 3.x"></option>
+            <option value="Tasy 4.x"></option><option value="Pixeon Smart 2024"></option><option value="Pixeon Aurora"></option>
+            <option value="MV 2185"></option><option value="Não informado"></option>
+          </datalist>
+          <button type="button" class="btn-add-row" id="addInteg">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Adicionar tipo de integração
+          </button>
+          <span class="error-msg" id="err-integTable">Informe ao menos um tipo de integração.</span>
+        </div>
+        <div class="field-divider"></div>
+        <div class="field-group">
+          <label>Direção do fluxo <span class="required-star">*</span></label>
+          <select id="intFluxo">
+            <option value="">Selecione...</option>
+            <option>Unidirecional (envio)</option>
+            <option>Unidirecional (recebimento)</option>
+            <option>Bidirecional</option>
+          </select>
+          <span class="error-msg" id="err-intFluxo">Obrigatório.</span>
+        </div>
+        <div class="field-group">
+          <label>Padrão / Protocolo utilizado <span class="required-star">*</span></label>
+          <input type="text" id="intProtocolo" placeholder="Ex.: HL7 v2.x, FHIR, API REST, DICOM MWL..." list="protocoloList" />
+          <datalist id="protocoloList">
+            <option value="HL7 v2.x"></option><option value="HL7 FHIR"></option><option value="API REST"></option>
+            <option value="DICOM MWL"></option><option value="DICOM MPPS"></option><option value="Webservice SOAP"></option>
+          </datalist>
+          <span class="error-msg" id="err-intProtocolo">Obrigatório.</span>
+        </div>
+        <div class="field-group">
+          <label>Documentação técnica disponível? <span class="required-star">*</span></label>
+          <div class="doc-description-box">
+            <p class="doc-desc-title">A documentação deverá contemplar, quando disponível:</p>
+            <ul class="doc-desc-list">
+              <li>Manual de integração ou especificação técnica do sistema</li>
+              <li>Diagrama de fluxo de dados, quando disponível</li>
+              <li>Exemplo de mensagem ou payload esperado</li>
+              <li>Mapeamento de campos obrigatórios e opcionais</li>
+            </ul>
+          </div>
+          <div class="radio-group" style="margin-top:10px">
+            <div class="radio-option"><input type="radio" name="docAnexada" id="doc-sim" value="Sim"><label for="doc-sim">Sim</label></div>
+            <div class="radio-option"><input type="radio" name="docAnexada" id="doc-nao" value="Não"><label for="doc-nao">Não</label></div>
+          </div>
+          <span class="error-msg" id="err-docAnexada">Obrigatório.</span>
+
+          <!-- Anexo condicional -->
+          <div class="doc-upload-area" id="docUploadArea">
+            <label style="font-size:13px;font-weight:500;margin-top:4px;display:block">Anexar documentação técnica <span class="required-star">*</span></label>
+            <span class="field-hint">Envie um ou mais arquivos conforme os itens acima</span>
+            <input type="file" id="docAnexoFile" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.zip" multiple style="margin-top:6px" />
+            <span class="field-hint" style="margin-top:2px">Formatos aceitos: PDF, Word, PNG, JPG, ZIP. Você pode selecionar múltiplos arquivos.</span>
+            <span class="error-msg" id="err-docAnexoFile">Anexe ao menos um arquivo de documentação.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7.3 ACESSO TÉCNICO -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="int-num">7.3</div>
+        <div><div class="section-title">Dados Técnicos de Acesso</div><div class="section-subtitle">Endpoint, credenciais e homologação</div></div>
+      </div>
+      <div class="section-body">
+        <div class="field-group"><label>URL do endpoint <span class="required-star">*</span></label><input type="url" id="intEndpoint" placeholder="https://..." /><span class="error-msg" id="err-intEndpoint">Obrigatório.</span></div>
+        <div class="cols-2">
+          <div class="field-group"><label>Token / Credenciais de teste <span class="required-star">*</span></label><input type="text" id="intToken" placeholder="Credenciais para homologação" /><span class="error-msg" id="err-intToken">Obrigatório.</span></div>
+          <div class="field-group">
+            <label>Método de autenticação <span class="required-star">*</span></label>
+            <select id="intAutenticacao"><option value="">Selecione...</option><option>Bearer Token</option><option>Basic Auth</option><option>OAuth 2.0</option><option>API Key</option><option>Outro</option></select>
+            <span class="error-msg" id="err-intAutenticacao">Obrigatório.</span>
+          </div>
+        </div>
+        <div class="field-divider"></div>
+        <div class="field-group">
+          <label>Ambiente de homologação disponível? <span class="required-star">*</span></label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="homolog" id="hom-sim" value="Sim"><label for="hom-sim">Sim</label></div>
+            <div class="radio-option"><input type="radio" name="homolog" id="hom-nao" value="Não"><label for="hom-nao">Não</label></div>
+          </div>
+          <span class="error-msg" id="err-homolog">Obrigatório.</span>
+        </div>
+        <div class="field-group"><label>URL do ambiente de teste</label><input type="url" id="intURLTeste" placeholder="https://homolog..." /></div>
+        <div class="field-group"><label>Dados de acesso ao ambiente de teste</label><input type="text" id="intAcessoTeste" placeholder="Usuário, senha ou token de teste" /></div>
+      </div>
+    </div>
+
+    <!-- 7.4 OBSERVAÇÕES -->
+    <div class="section-block">
+      <div class="section-header">
+        <div class="int-num">7.4</div>
+        <div><div class="section-title">Observações Adicionais</div><div class="section-subtitle">Informações complementares para a equipe técnica</div></div>
+      </div>
+      <div class="section-body">
+        <div class="field-group">
+          <textarea id="intObservacoes" rows="4" placeholder="Restrições de rede, requisitos de segurança, janelas de manutenção, dependências com outros sistemas..."></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /integration-section -->
+
+  <div class="submit-area">
+    <div class="submit-note">Ao enviar, nossa equipe receberá as informações e iniciará o processo de cadastro. Campos com <span class="required-star">*</span> são obrigatórios.</div>
+    <button type="submit" class="btn-submit">Enviar Solicitação →</button>
+  </div>
+
+</form>
+
+<div class="success-screen" id="successScreen">
+  <div class="success-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h2>Solicitação enviada!</h2>
+  <p>Recebemos os dados da nova unidade. Nossa equipe entrará em contato em até <strong>5 dias úteis</strong> para dar continuidade ao processo.</p>
+  <p style="font-size:13px;color:var(--gray-400);margin-top:8px">Eden Cloud PACS — edenmed.com</p>
+</div>
+
+</div>
+
+<script>
+  // MASKS
+  function maskPhone(el) {
+    el.addEventListener('input', function() {
+      let v=this.value.replace(/\D/g,'').slice(0,11);
+      if(v.length>6) v='('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7);
+      else if(v.length>2) v='('+v.slice(0,2)+') '+v.slice(2);
+      else if(v.length>0) v='('+v;
+      this.value=v;
+    });
+  }
+  maskPhone(document.getElementById('respTelefone'));
+  maskPhone(document.getElementById('intTelefone'));
+  document.getElementById('cep').addEventListener('input',function(){let v=this.value.replace(/\D/g,'').slice(0,8);if(v.length>5)v=v.slice(0,5)+'-'+v.slice(5);this.value=v;});
+  document.getElementById('cnpjCliente').addEventListener('input',function(){let v=this.value.replace(/\D/g,'').slice(0,14);if(v.length>12)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8,12)+'-'+v.slice(12);else if(v.length>8)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8);else if(v.length>5)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5);else if(v.length>2)v=v.slice(0,2)+'.'+v.slice(2);this.value=v;});
+  document.getElementById('intCNPJ').addEventListener('input',function(){let v=this.value.replace(/\D/g,'').slice(0,14);if(v.length>12)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8,12)+'-'+v.slice(12);else if(v.length>8)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8);else if(v.length>5)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5);else if(v.length>2)v=v.slice(0,2)+'.'+v.slice(2);this.value=v;});
+
+  // VOLUMETRIA AUTO-CALC
+  document.querySelectorAll('[data-vol]').forEach(i=>i.addEventListener('input',()=>{
+    let t=0; document.querySelectorAll('[data-vol]').forEach(x=>t+=parseInt(x.value)||0);
+    document.getElementById('volTotal').textContent=t.toLocaleString('pt-BR')+' exames/mês';
+  }));
+
+  // DYNAMIC TABLE ROWS
+  function equipRowHTML(){return`<tr><td><select class="equip-mod" style="width:100%"><option value="">Selecione...</option><option>CT – Tomografia</option><option>CR – Raio X</option><option>MA – Mamógrafo</option><option>DO – Densitometria</option><option>MN – Medicina Nuclear</option><option>MR – Ressonância</option><option>XA – Hemodinâmica</option><option>US – Ultrassom</option><option>CL – Colonoscopia</option><option>ES – Endoscopia</option><option>Métodos Gráficos</option><option>Outros</option></select></td><td><input type="text" class="equip-marca" placeholder="Ex.: Siemens, Philips, GE..." style="width:100%" list="marcaList"/></td><td><input type="number" class="equip-qtd" placeholder="1" min="1" style="width:100%"/></td><td style="text-align:center"><button type="button" class="btn-remove-row">×</button></td></tr>`;}
+  function integRowHTML(){return`<tr><td><select class="integ-tipo" style="width:100%"><option value="">Selecione...</option><option>RIS / HIS / EMR</option><option>Arquitetura da integração</option><option>Laudo e Imagem</option><option>Dados demográficos do paciente</option><option>Worklist</option><option>Outros</option></select></td><td><input type="text" class="integ-sistema" placeholder="Ex.: MV, Tasy, Pixeon..." style="width:100%" list="sistemaSugestoes"/></td><td><input type="text" class="integ-versao" placeholder="Ex.: Soul, v3.2..." style="width:100%" list="versaoSugestoes"/></td><td style="text-align:center"><button type="button" class="btn-remove-row">×</button></td></tr>`;}
+
+  function bindRemove(){
+    document.querySelectorAll('.btn-remove-row').forEach(btn=>{
+      btn.onclick=function(){const rows=this.closest('tbody').querySelectorAll('tr');if(rows.length>1)this.closest('tr').remove();};
+    });
+  }
+  document.getElementById('addEquip').addEventListener('click',()=>{document.getElementById('equipBody').insertAdjacentHTML('beforeend',equipRowHTML());bindRemove();});
+  document.getElementById('addInteg').addEventListener('click',()=>{document.getElementById('integBody').insertAdjacentHTML('beforeend',integRowHTML());bindRemove();});
+  bindRemove();
+
+  // CONDITIONAL DOC UPLOAD
+  document.querySelectorAll('input[name="docAnexada"]').forEach(r => {
+    r.addEventListener('change', function() {
+      const area = document.getElementById('docUploadArea');
+      area.classList.toggle('visible', this.value === 'Sim');
+      if(this.value !== 'Sim') document.getElementById('docAnexoFile').value = '';
+    });
+  });
+
+  // CONDITIONAL INTEGRATION SECTION
+  document.querySelectorAll('input[name="integracao"]').forEach(r=>{
+    r.addEventListener('change',function(){
+      const s=document.getElementById('integrationSection');
+      if(this.value==='Sim'){s.classList.add('visible');setTimeout(()=>s.scrollIntoView({behavior:'smooth',block:'start'}),200);}
+      else s.classList.remove('visible');
+    });
+  });
+
+  // PROGRESS
+  function updateProgress(){
+    const f=document.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),select,textarea');
+    let filled=0;f.forEach(x=>{if(x.value.trim())filled++;});
+    document.getElementById('progressFill').style.width=Math.min(100,Math.round(filled/f.length*100))+'%';
+  }
+  document.getElementById('mainForm').addEventListener('input',updateProgress);
+  document.getElementById('mainForm').addEventListener('change',updateProgress);
+
+  // VALIDATION
+  function showErr(id,show){const e=document.getElementById('err-'+id);if(e)e.classList.toggle('visible',show);}
+  function markField(id,isErr){const e=document.getElementById(id);if(e)e.classList.toggle('error',isErr);}
+  function req(id){const e=document.getElementById(id);const empty=!e||!e.value.trim();markField(id,empty);showErr(id,empty);return!empty;}
+  function reqRadio(name,errId){const c=document.querySelector('input[name="'+name+'"]:checked');const e=document.getElementById('err-'+errId);if(e)e.classList.toggle('visible',!c);return!!c;}
+  function reqEmail(id){const e=document.getElementById(id);const ok=e&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.value);markField(id,!ok);showErr(id,!ok);return ok;}
+
+  document.getElementById('mainForm').addEventListener('submit',async function(e){
+    e.preventDefault();
+    let ok=true;
+    const integSim=document.querySelector('input[name="integracao"]:checked')?.value==='Sim';
+    if(!req('nomeOrg'))ok=false;
+    if(!req('cnpjCliente'))ok=false;
+    if(!req('respNome'))ok=false;
+    if(!req('respSobrenome'))ok=false;
+    if(!reqEmail('respEmail'))ok=false;
+    if(!req('respTelefone'))ok=false;
+    if(!req('endereco'))ok=false;
+    if(!req('cidade'))ok=false;
+    if(!req('estado'))ok=false;
+    if(!req('cep'))ok=false;
+    const modOk=!!document.querySelector('#modalidadesGroup input:checked');
+    showErr('modalidades',!modOk);if(!modOk)ok=false;
+    const equipOk=[...document.querySelectorAll('#equipBody tr')].some(r=>r.querySelector('.equip-mod')?.value);
+    showErr('equip',!equipOk);if(!equipOk)ok=false;
+    if(!reqRadio('plantao','plantao'))ok=false;
+    if(!req('slaNormal'))ok=false;
+    if(!req('slaPrioritario'))ok=false;
+    if(!req('slaUrgente'))ok=false;
+    if(!reqRadio('peerReview','peerReview'))ok=false;
+    if(!req('statusExame'))ok=false;
+    if(!req('risHis'))ok=false;
+    if(!reqRadio('servidor','servidor'))ok=false;
+    if(!reqRadio('integracao','integracao'))ok=false;
+    if(integSim){
+      if(!req('intEmpresa'))ok=false;
+      if(!req('intCNPJ'))ok=false;
+      if(!req('intResponsavel'))ok=false;
+      if(!reqEmail('intEmail'))ok=false;
+      if(!req('intTelefone'))ok=false;
+      const integOk=[...document.querySelectorAll('#integBody tr')].some(r=>r.querySelector('.integ-tipo')?.value);
+      showErr('integTable',!integOk);if(!integOk)ok=false;
+      if(!req('intFluxo'))ok=false;
+      if(!req('intProtocolo'))ok=false;
+      if(!reqRadio('docAnexada','docAnexada'))ok=false;
+      // Validar anexo apenas se Sim
+      const docSim = document.querySelector('input[name="docAnexada"]:checked')?.value === 'Sim';
+      if(docSim) {
+        const fileInput = document.getElementById('docAnexoFile');
+        const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+        showErr('docAnexoFile', !hasFile);
+        if(!hasFile) ok=false;
+      } else { showErr('docAnexoFile', false); }
+      if(!req('intEndpoint'))ok=false;
+      if(!req('intToken'))ok=false;
+      if(!req('intAutenticacao'))ok=false;
+      if(!reqRadio('homolog','homolog'))ok=false;
+    }
+    if(!ok){document.querySelector('.error-msg.visible')?.scrollIntoView({behavior:'smooth',block:'center'});return;}
+
+    // ENVIO PARA FORMSPREE
+    const btn = document.querySelector('.btn-submit');
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+
+    const formData = new FormData();
+    const fields = {
+      'Nome da Organização/Filial': document.getElementById('nomeOrg')?.value,
+      'CNPJ': document.getElementById('cnpjCliente')?.value,
+      'ID da Unidade': document.getElementById('idUnidade')?.value,
+      'Nome do Responsável': (document.getElementById('respNome')?.value||'')+' '+(document.getElementById('respSobrenome')?.value||''),
+      'E-mail do Responsável': document.getElementById('respEmail')?.value,
+      'Telefone do Responsável': document.getElementById('respTelefone')?.value,
+      'Endereço': document.getElementById('endereco')?.value,
+      'Cidade': document.getElementById('cidade')?.value,
+      'Estado': document.getElementById('estado')?.value,
+      'CEP': document.getElementById('cep')?.value,
+      'Modalidades': [...document.querySelectorAll('#modalidadesGroup input:checked')].map(x=>x.value).join(', '),
+      'Plantão': document.querySelector('input[name="plantao"]:checked')?.value,
+      'SLA Normal': document.getElementById('slaNormal')?.value,
+      'SLA Prioritário': document.getElementById('slaPrioritario')?.value,
+      'SLA Urgente': document.getElementById('slaUrgente')?.value,
+      'Peer Review': document.querySelector('input[name="peerReview"]:checked')?.value,
+      'Status inicial do exame': document.getElementById('statusExame')?.value,
+      'RIS/HIS': document.getElementById('risHis')?.value,
+      'Servidor': document.querySelector('input[name="servidor"]:checked')?.value,
+      'Usa integração': document.querySelector('input[name="integracao"]:checked')?.value,
+    };
+    document.querySelectorAll('#equipBody tr').forEach((tr,i)=>{
+      const mod=tr.querySelector('.equip-mod')?.value;
+      const marca=tr.querySelector('.equip-marca')?.value;
+      const qtd=tr.querySelector('.equip-qtd')?.value;
+      if(mod) fields[`Equipamento ${i+1}`]=`${mod} | ${marca||'-'} | Qtd: ${qtd||'-'}`;
+    });
+    ['CT','CR','MA','DO','MN','MR','XA','US','CL','ES','MG','Out'].forEach(m=>{
+      const v=document.getElementById('vol'+m)?.value;
+      if(v&&v!=='0') fields['Vol. '+m]=v+' exames/mês';
+    });
+    if(integSim){
+      fields['Empresa (integração)']=document.getElementById('intEmpresa')?.value;
+      fields['CNPJ (integração)']=document.getElementById('intCNPJ')?.value;
+      fields['Responsável técnico']=document.getElementById('intResponsavel')?.value;
+      fields['E-mail técnico']=document.getElementById('intEmail')?.value;
+      fields['Telefone técnico']=document.getElementById('intTelefone')?.value;
+      document.querySelectorAll('#integBody tr').forEach((tr,i)=>{
+        const tipo=tr.querySelector('.integ-tipo')?.value;
+        const sis=tr.querySelector('.integ-sistema')?.value;
+        const ver=tr.querySelector('.integ-versao')?.value;
+        if(tipo) fields[`Integração ${i+1}`]=`${tipo} | ${sis||'-'} | ${ver||'-'}`;
+      });
+      fields['Fluxo']=document.getElementById('intFluxo')?.value;
+      fields['Protocolo']=document.getElementById('intProtocolo')?.value;
+      fields['Doc. técnica']=document.querySelector('input[name="docAnexada"]:checked')?.value;
+      fields['Endpoint']=document.getElementById('intEndpoint')?.value;
+      fields['Autenticação']=document.getElementById('intAutenticacao')?.value;
+      fields['Homologação']=document.querySelector('input[name="homolog"]:checked')?.value;
+      fields['URL Teste']=document.getElementById('intURLTeste')?.value;
+      fields['Observações']=document.getElementById('intObservacoes')?.value;
+    }
+    Object.entries(fields).forEach(([k,v])=>{ if(v) formData.set(k,v); });
+
+    try {
+      const res = await fetch('https://formspree.io/f/xgorpllv', { method:'POST', body: formData, headers:{'Accept':'application/json'} });
+      if(res.ok){
+        document.getElementById('mainForm').style.display='none';
+        document.getElementById('successScreen').classList.add('visible');
+        window.scrollTo({top:0,behavior:'smooth'});
+        document.getElementById('progressFill').style.width='100%';
+      } else {
+        btn.textContent='Enviar Solicitação →';
+        btn.disabled=false;
+        alert('Ocorreu um erro ao enviar. Tente novamente.');
+      }
+    } catch(err){
+      btn.textContent='Enviar Solicitação →';
+      btn.disabled=false;
+      alert('Erro de conexão. Verifique sua internet e tente novamente.');
+    }
+  });
+</script>
+</body>
+</html>
