@@ -877,15 +877,6 @@
     try {
       const res = await fetch('https://formspree.io/f/xgorpllv', { method:'POST', body: formData, headers:{'Accept':'application/json'} });
 
-      // Enviar também para o Make.com
-      const makeData = {};
-      Object.entries(fields).forEach(([k,v])=>{ if(v) makeData[k]=v; });
-      fetch('https://hook.us2.make.com/xrvqjccuacvu2t4vlgo5th59vtvpyv9a', {
-        method:'POST',
-        body: JSON.stringify(makeData),
-        headers:{'Content-Type':'application/json'}
-      }).catch(()=>{}); // silencioso — não bloqueia o envio principal
-
       if(res.ok){
         document.getElementById('mainForm').style.display='none';
         document.getElementById('successScreen').classList.add('visible');
