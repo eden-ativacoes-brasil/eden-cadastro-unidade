@@ -445,25 +445,6 @@
       </div>
     </div>
 
-    <!-- 7.1 IDENTIFICAÇÃO -->
-    <div class="section-block">
-      <div class="section-header">
-        <div class="int-num">7.1</div>
-        <div><div class="section-title">Dados da Empresa</div><div class="section-subtitle">Identificação para fins de integração</div></div>
-      </div>
-      <div class="section-body">
-        <div class="cols-2">
-          <div class="field-group"><label>Nome da Empresa <span class="required-star">*</span></label><input type="text" id="intEmpresa" placeholder="Nome completo" /><span class="error-msg" id="err-intEmpresa">Obrigatório.</span></div>
-          <div class="field-group"><label>CNPJ <span class="required-star">*</span></label><input type="text" id="intCNPJ" placeholder="00.000.000/0000-00" maxlength="18" /><span class="error-msg" id="err-intCNPJ">Obrigatório.</span></div>
-        </div>
-        <div class="field-group"><label>Responsável técnico <span class="required-star">*</span></label><input type="text" id="intResponsavel" placeholder="Nome do responsável pela integração" /><span class="error-msg" id="err-intResponsavel">Obrigatório.</span></div>
-        <div class="cols-2">
-          <div class="field-group"><label>E-mail técnico <span class="required-star">*</span></label><input type="email" id="intEmail" placeholder="tecnico@empresa.com" /><span class="error-msg" id="err-intEmail">E-mail inválido.</span></div>
-          <div class="field-group"><label>Telefone / WhatsApp <span class="required-star">*</span></label><input type="tel" id="intTelefone" placeholder="(00) 00000-0000" maxlength="15" /><span class="error-msg" id="err-intTelefone">Obrigatório.</span></div>
-        </div>
-      </div>
-    </div>
-
     <!-- 7.2 TABELA DE INTEGRAÇÕES (ajuste 4) -->
     <div class="section-block">
       <div class="section-header">
@@ -644,6 +625,51 @@
 
   </div><!-- /integration-section -->
 
+  <!-- SEÇÃO 8 — MIGRAÇÃO DE LEGADO -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <div><div class="section-title">Migração de Legado</div><div class="section-subtitle">Imagens e dados de sistemas anteriores</div></div>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label>O cliente deseja realizar migração de imagens legadas? <span class="required-star">*</span></label>
+        <span class="field-hint">Migração de PACS legados como GE, Webkriativa, Medilab, Carestream, Vivace, RN Tecnologia, entre outros</span>
+        <div class="radio-group">
+          <div class="radio-option"><input type="radio" name="migLegado" id="mig-sim" value="Sim"><label for="mig-sim">Sim</label></div>
+          <div class="radio-option"><input type="radio" name="migLegado" id="mig-nao" value="Não"><label for="mig-nao">Não</label></div>
+          <div class="radio-option"><input type="radio" name="migLegado" id="mig-avaliacao" value="Em avaliação"><label for="mig-avaliacao">Em avaliação</label></div>
+        </div>
+        <span class="error-msg" id="err-migLegado">Seleção obrigatória.</span>
+        <div id="migDetalhesArea" style="max-height:0;overflow:hidden;opacity:0;transition:max-height 0.4s ease,opacity 0.3s ease;">
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:14px;">
+            <div class="field-group">
+              <label style="font-size:12.5px;font-weight:500">Sistema legado atual</label>
+              <input type="text" id="migSistema" placeholder="Ex.: GE Centricity, Carestream Vue, Webkriativa..." list="migSistemaList" />
+              <datalist id="migSistemaList">
+                <option value="GE Centricity"></option>
+                <option value="Carestream Vue"></option>
+                <option value="Webkriativa"></option>
+                <option value="Medilab"></option>
+                <option value="Vivace"></option>
+                <option value="RN Tecnologia"></option>
+                <option value="Outro"></option>
+              </datalist>
+            </div>
+            <div class="field-group">
+              <label style="font-size:12.5px;font-weight:500">Volume estimado de imagens</label>
+              <input type="text" id="migVolume" placeholder="Ex.: 450 TB, 2 milhões de estudos..." />
+            </div>
+            <div class="field-group">
+              <label style="font-size:12.5px;font-weight:500">Observações adicionais</label>
+              <textarea id="migObservacoes" rows="2" placeholder="Período de retenção, prioridades, restrições de janela de migração..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="submit-area">
     <div class="submit-note">Ao enviar, nossa equipe receberá as informações e iniciará o processo de cadastro. Campos com <span class="required-star">*</span> são obrigatórios.</div>
     <button type="submit" class="btn-submit">Enviar Solicitação →</button>
@@ -672,10 +698,8 @@
     });
   }
   maskPhone(document.getElementById('respTelefone'));
-  maskPhone(document.getElementById('intTelefone'));
   document.getElementById('cep').addEventListener('input',function(){let v=this.value.replace(/\D/g,'').slice(0,8);if(v.length>5)v=v.slice(0,5)+'-'+v.slice(5);this.value=v;});
   document.getElementById('cnpjCliente').addEventListener('input',function(){let v=this.value.replace(/\D/g,'').slice(0,14);if(v.length>12)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8,12)+'-'+v.slice(12);else if(v.length>8)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8);else if(v.length>5)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5);else if(v.length>2)v=v.slice(0,2)+'.'+v.slice(2);this.value=v;});
-  document.getElementById('intCNPJ').addEventListener('input',function(){let v=this.value.replace(/\D/g,'').slice(0,14);if(v.length>12)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8,12)+'-'+v.slice(12);else if(v.length>8)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8);else if(v.length>5)v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5);else if(v.length>2)v=v.slice(0,2)+'.'+v.slice(2);this.value=v;});
 
   // VOLUMETRIA AUTO-CALC
   document.querySelectorAll('[data-vol]').forEach(i=>i.addEventListener('input',()=>{
@@ -697,6 +721,7 @@
   bindRemove();
 
   // CONDITIONAL DOC UPLOAD
+  document.querySelectorAll('input[name="migLegado"]').forEach(r=>{r.addEventListener('change',function(){const a=document.getElementById('migDetalhesArea');if(this.value==='Sim'){a.style.maxHeight='400px';a.style.opacity='1';a.style.marginTop='12px';}else{a.style.maxHeight='0';a.style.opacity='0';a.style.marginTop='0';}});});
   document.querySelectorAll('input[name="base64"]').forEach(r=>{
     r.addEventListener('change',function(){
       const a=document.getElementById('base64DetailArea');
@@ -764,12 +789,8 @@
     if(!req('risHis'))ok=false;
     if(!reqRadio('servidor','servidor'))ok=false;
     if(!reqRadio('integracao','integracao'))ok=false;
+    if(!reqRadio('migLegado','migLegado'))ok=false;
     if(integSim){
-      if(!req('intEmpresa'))ok=false;
-      if(!req('intCNPJ'))ok=false;
-      if(!req('intResponsavel'))ok=false;
-      if(!reqEmail('intEmail'))ok=false;
-      if(!req('intTelefone'))ok=false;
       const integOk=[...document.querySelectorAll('#integBody tr')].some(r=>r.querySelector('.integ-tipo')?.value);
       showErr('integTable',!integOk);if(!integOk)ok=false;
       if(!req('intFluxo'))ok=false;
@@ -818,6 +839,10 @@
       'RIS/HIS': document.getElementById('risHis')?.value,
       'Servidor': document.querySelector('input[name="servidor"]:checked')?.value,
       'Usa integração': document.querySelector('input[name="integracao"]:checked')?.value,
+      'Migração de legado': document.querySelector('input[name="migLegado"]:checked')?.value,
+      'Sistema legado': document.getElementById('migSistema')?.value,
+      'Volume legado': document.getElementById('migVolume')?.value,
+      'Obs. migração': document.getElementById('migObservacoes')?.value,
     };
     document.querySelectorAll('#equipBody tr').forEach((tr,i)=>{
       const mod=tr.querySelector('.equip-mod')?.value;
@@ -830,11 +855,6 @@
       if(v&&v!=='0') fields['Vol. '+m]=v+' exames/mês';
     });
     if(integSim){
-      fields['Empresa (integração)']=document.getElementById('intEmpresa')?.value;
-      fields['CNPJ (integração)']=document.getElementById('intCNPJ')?.value;
-      fields['Responsável técnico']=document.getElementById('intResponsavel')?.value;
-      fields['E-mail técnico']=document.getElementById('intEmail')?.value;
-      fields['Telefone técnico']=document.getElementById('intTelefone')?.value;
       document.querySelectorAll('#integBody tr').forEach((tr,i)=>{
         const tipo=tr.querySelector('.integ-tipo')?.value;
         const sis=tr.querySelector('.integ-sistema')?.value;
