@@ -550,6 +550,27 @@
           <span class="error-msg" id="err-intProtocolo">Obrigatório.</span>
         </div>
         <div class="field-group">
+          <label>Terá retorno de laudo? <span class="required-star">*</span></label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="base64" id="base64-sim" value="Sim"><label for="base64-sim">Sim</label></div>
+            <div class="radio-option"><input type="radio" name="base64" id="base64-nao" value="Não"><label for="base64-nao">Não</label></div>
+          </div>
+          <span class="error-msg" id="err-base64">Seleção obrigatória.</span>
+          <div class="doc-upload-area" id="base64DetailArea">
+            <label style="font-size:12.5px;font-weight:500;display:block;margin-bottom:4px">Qual formato requerido?</label>
+            <input type="text" id="base64Detail" placeholder="Ex.: Base64, PDF, HL7, XML..." list="laudoFormatoList" />
+            <datalist id="laudoFormatoList">
+              <option value="Base64"></option>
+              <option value="PDF"></option>
+              <option value="HL7"></option>
+              <option value="XML"></option>
+              <option value="JSON"></option>
+              <option value="RTF"></option>
+            </datalist>
+          </div>
+        </div>
+        <div class="field-divider"></div>
+        <div class="field-group">
           <label>Documentação técnica disponível? <span class="required-star">*</span></label>
           <div class="doc-description-box">
             <p class="doc-desc-title">A documentação deverá contemplar, quando disponível:</p>
@@ -676,6 +697,13 @@
   bindRemove();
 
   // CONDITIONAL DOC UPLOAD
+  document.querySelectorAll('input[name="base64"]').forEach(r=>{
+    r.addEventListener('change',function(){
+      const a=document.getElementById('base64DetailArea');
+      a.classList.toggle('visible',this.value==='Sim');
+      if(this.value!=='Sim')document.getElementById('base64Detail').value='';
+    });
+  });
   document.querySelectorAll('input[name="docAnexada"]').forEach(r => {
     r.addEventListener('change', function() {
       const area = document.getElementById('docUploadArea');
@@ -746,6 +774,7 @@
       showErr('integTable',!integOk);if(!integOk)ok=false;
       if(!req('intFluxo'))ok=false;
       if(!req('intProtocolo'))ok=false;
+      if(!reqRadio('base64','base64'))ok=false;
       if(!reqRadio('docAnexada','docAnexada'))ok=false;
       // Validar anexo apenas se Sim
       const docSim = document.querySelector('input[name="docAnexada"]:checked')?.value === 'Sim';
@@ -812,6 +841,8 @@
         const ver=tr.querySelector('.integ-versao')?.value;
         if(tipo) fields[`Integração ${i+1}`]=`${tipo} | ${sis||'-'} | ${ver||'-'}`;
       });
+      fields['Retorno Base64']=document.querySelector('input[name="base64"]:checked')?.value;
+      fields['Base64 Detalhes']=document.getElementById('base64Detail')?.value;
       fields['Fluxo']=document.getElementById('intFluxo')?.value;
       fields['Protocolo']=document.getElementById('intProtocolo')?.value;
       fields['Doc. técnica']=document.querySelector('input[name="docAnexada"]:checked')?.value;
